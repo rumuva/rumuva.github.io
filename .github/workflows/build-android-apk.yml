@@ -6,6 +6,10 @@ on:
       - '.github/workflows/build-android-apk.yml'
   workflow_dispatch:
 
+concurrency:
+  group: nando-android-apk
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
