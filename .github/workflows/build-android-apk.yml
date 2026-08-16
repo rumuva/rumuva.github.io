@@ -50,42 +50,59 @@ jobs:
           BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ env.KEY_PASS }}
           BUBBLEWRAP_KEY_PASSWORD: ${{ env.KEY_PASS }}
         run: |
-          sudo apt-get update
-          sudo apt-get install -y expect
           mkdir -p android
-          cat > /tmp/init-bubblewrap.exp <<'EXPECT'
-          set timeout 600
-          log_user 1
-          spawn bubblewrap init --manifest=https://rumuva.github.io/manifest.webmanifest --directory=android
-          expect -re {Domain:} { send "rumuva.github.io\r" }
-          expect -re {URL path:} { send "/index.html\r" }
-          expect -re {Application name:} { send "NANDO BROS II\r" }
-          expect -re {Short name:} { send "NANDO II\r" }
-          expect -re {Application ID:} { send "io.github.rumuva.nandobros2\r" }
-          expect -re {Starting version code} { send "1\r" }
-          expect -re {Display mode:} { send "\r" }
-          expect -re {Orientation:} { send "\r" }
-          expect -re {Status bar color:} { send "#178fe5\r" }
-          expect -re {Splash screen color:} { send "#0b1744\r" }
-          expect -re {Icon URL:} { send "https://rumuva.github.io/icons/icon-512.png\r" }
-          expect -re {Maskable icon URL:} { send "https://rumuva.github.io/icons/icon-512.png\r" }
-          expect -re {Monochrome icon URL:} { send "\r" }
-          expect -re {Include support for Play Billing} { send "n\r" }
-          expect -re {Request geolocation permission} { send "n\r" }
-          expect -re {Key store location:} { send "\r" }
-          expect -re {Key name:} { send "nando-bros-key\r" }
-          expect -re {Do you want to create one now} { send "y\r" }
-          expect -re {First and Last names} { send "NANDO BROS II Admin\r" }
-          expect -re {Organizational Unit} { send "Games\r" }
-          expect -re {Organization \(eg: Company Name\)} { send "NANDO BROS\r" }
-          expect -re {Country \(2 letter code\)} { send "ES\r" }
-          expect -re {Password for the Key Store:} { send "$env(KEY_PASS)\r" }
-          expect -re {Password for the Key:} { send "$env(KEY_PASS)\r" }
-          expect eof
-          catch wait result
-          exit [lindex $result 3]
-          EXPECT
-          expect /tmp/init-bubblewrap.exp
+          cat > android/twa-manifest.json <<'JSON'
+          {
+            "packageId": "io.github.rumuva.nandobros2",
+            "host": "rumuva.github.io",
+            "name": "NANDO BROS II",
+            "launcherName": "NANDO II",
+            "display": "fullscreen",
+            "themeColor": "#178fe5",
+            "themeColorDark": "#0b1744",
+            "navigationColor": "#178fe5",
+            "navigationColorDark": "#0b1744",
+            "navigationDividerColor": "#178fe5",
+            "navigationDividerColorDark": "#0b1744",
+            "backgroundColor": "#0b1744",
+            "enableNotifications": false,
+            "enableSiteSettingsShortcut": true,
+            "startUrl": "/index.html",
+            "iconUrl": "https://rumuva.github.io/icons/icon-512.png",
+            "maskableIconUrl": "https://rumuva.github.io/icons/icon-512.png",
+            "splashScreenFadeOutDuration": 300,
+            "signingKey": {
+              "path": "./android.keystore",
+              "alias": "nando-bros-key"
+            },
+            "appVersionCode": 1,
+            "appVersion": "1.0.0",
+            "shortcuts": [],
+            "generatorApp": "PWABuilder",
+            "webManifestUrl": "https://rumuva.github.io/manifest.webmanifest",
+            "fallbackType": "customtabs",
+            "features": {
+              "locationDelegation": {"enabled": false},
+              "playBilling": {"enabled": false}
+            },
+            "isChromeOSOnly": false,
+            "isMetaQuest": false,
+            "fullScopeUrl": "https://rumuva.github.io/",
+            "minSdkVersion": 23,
+            "orientation": "landscape",
+            "fingerprints": [],
+            "additionalTrustedOrigins": [],
+            "retainedBundles": []
+          }
+          JSON
+          bubblewrap update --skipVersionUpgrade --manifest=android/twa-manifest.json --directory=android
+          keytool -genkeypair -noprompt \
+            -keystore android/android.keystore \
+            -storepass "$KEY_PASS" \
+            -keypass "$KEY_PASS" \
+            -alias nando-bros-key \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -dname "CN=NANDO BROS II Admin, OU=Games, O=NANDO BROS, C=ES"
 
       - name: Build signed APK
         working-directory: android
