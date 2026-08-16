@@ -113,6 +113,8 @@ jobs:
         env:
           BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ env.KEY_PASS }}
           BUBBLEWRAP_KEY_PASSWORD: ${{ env.KEY_PASS }}
+          ANDROID_HOME: ${{ runner.temp }}/bubblewrap-sdk
+          ANDROID_SDK_ROOT: ${{ runner.temp }}/bubblewrap-sdk
         run: |
           bubblewrap build --skipPwaValidation
           test -f app-release-signed.apk
