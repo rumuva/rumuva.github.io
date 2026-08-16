@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "io.github.rumuva.nandobros2",
+      "sha256_cert_fingerprints": [
+        "80:90:99:CD:2D:28:38:88:DD:B4:63:F6:3B:47:55:11:88:73:FF:B1:24:4F:DC:28:59:E8:67:F5:39:30:C3:17"
+      ]
+    }
+  }
+]
