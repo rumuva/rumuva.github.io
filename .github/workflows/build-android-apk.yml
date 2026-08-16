@@ -35,12 +35,14 @@ jobs:
       - name: Install Bubblewrap
         run: |
           npm install --global @bubblewrap/cli@1.24.1
-          BUBBLEWRAP_SDK="$RUNNER_TEMP/bubblewrap-sdk"
-          mkdir -p "$HOME/.bubblewrap" "$BUBBLEWRAP_SDK"
-          cp -R "$ANDROID_SDK_ROOT/cmdline-tools/latest/." "$BUBBLEWRAP_SDK/"
-          if [ -d "$ANDROID_SDK_ROOT/licenses" ]; then cp -R "$ANDROID_SDK_ROOT/licenses" "$BUBBLEWRAP_SDK/licenses"; fi
-          yes | "$BUBBLEWRAP_SDK/bin/sdkmanager" --sdk_root="$BUBBLEWRAP_SDK" "platforms;android-36" "build-tools;36.1.0"
-          printf '{"jdkPath":"%s","androidSdkPath":"%s"}\n' "$JAVA_HOME" "$BUBBLEWRAP_SDK" > "$HOME/.bubblewrap/config.json"
+          mkdir -p "$HOME/.bubblewrap" "$ANDROID_SDK_ROOT/bin"
+          cat > "$ANDROID_SDK_ROOT/bin/sdkmanager" <<WRAPPER
+          #!/usr/bin/env bash
+          exec "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" "\\$@"
+          WRAPPER
+          chmod +x "$ANDROID_SDK_ROOT/bin/sdkmanager"
+          yes | "$ANDROID_SDK_ROOT/bin/sdkmanager" --sdk_root="$ANDROID_SDK_ROOT" "platforms;android-36" "build-tools;36.1.0"
+          printf '{"jdkPath":"%s","androidSdkPath":"%s"}\n' "$JAVA_HOME" "$ANDROID_SDK_ROOT" > "$HOME/.bubblewrap/config.json"
           bubblewrap doctor
 
       - name: Prepare signing password
@@ -113,8 +115,6 @@ jobs:
         env:
           BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ env.KEY_PASS }}
           BUBBLEWRAP_KEY_PASSWORD: ${{ env.KEY_PASS }}
-          ANDROID_HOME: ${{ runner.temp }}/bubblewrap-sdk
-          ANDROID_SDK_ROOT: ${{ runner.temp }}/bubblewrap-sdk
         run: |
           bubblewrap build --skipPwaValidation
           test -f app-release-signed.apk
