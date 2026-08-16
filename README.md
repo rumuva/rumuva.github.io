@@ -27,10 +27,11 @@ El progreso de niveles, mejor puntuación y preferencias de audio se guardan en 
 
 ## Instalar en Android
 
-1. Publica toda esta carpeta en un alojamiento HTTPS como GitHub Pages, Netlify o Cloudflare Pages.
-2. Abre la dirección publicada desde Chrome en el móvil Android.
-3. Pulsa **Instalar en Android** o abre el menú de Chrome y elige **Instalar aplicación**.
-4. Gira el móvil horizontalmente para jugar con los controles táctiles.
+Enlace público: **https://rumuva.github.io/**
+
+1. Abre esa dirección desde Chrome en el móvil Android.
+2. Pulsa **Instalar en Android** o abre el menú de Chrome y elige **Instalar aplicación**.
+3. Gira el móvil horizontalmente para jugar con los controles táctiles.
 
 Después de la primera carga, el juego funciona sin conexión gracias al service worker. Abrir `index.html` directamente como archivo permite jugar, pero Android exige una dirección HTTPS para mostrar la instalación.
 

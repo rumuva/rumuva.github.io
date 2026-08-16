@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nando-bros-ii-v1';
+const CACHE_NAME = 'nando-bros-ii-v2';
 const GAME_FILES = ['./','./index.html','./styles.css','./game.js','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png'];
 
 self.addEventListener('install', event => {
