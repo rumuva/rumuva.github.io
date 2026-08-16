@@ -31,8 +31,12 @@ jobs:
       - name: Install Bubblewrap
         run: |
           npm install --global @bubblewrap/cli@1.24.1
-          mkdir -p "$HOME/.bubblewrap"
-          printf '{"jdkPath":"%s","androidSdkPath":"%s"}\n' "$JAVA_HOME" "$ANDROID_SDK_ROOT" > "$HOME/.bubblewrap/config.json"
+          BUBBLEWRAP_SDK="$RUNNER_TEMP/bubblewrap-sdk"
+          mkdir -p "$HOME/.bubblewrap" "$BUBBLEWRAP_SDK"
+          ln -s "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin" "$BUBBLEWRAP_SDK/bin"
+          if [ -d "$ANDROID_SDK_ROOT/licenses" ]; then cp -R "$ANDROID_SDK_ROOT/licenses" "$BUBBLEWRAP_SDK/licenses"; fi
+          yes | "$BUBBLEWRAP_SDK/bin/sdkmanager" --sdk_root="$BUBBLEWRAP_SDK" "platforms;android-36" "build-tools;36.1.0"
+          printf '{"jdkPath":"%s","androidSdkPath":"%s"}\n' "$JAVA_HOME" "$BUBBLEWRAP_SDK" > "$HOME/.bubblewrap/config.json"
           bubblewrap doctor
 
       - name: Prepare signing password
