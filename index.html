@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#178fe5">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>NANDO BROS II — Aventura de plataformas</title>
+  <meta name="description" content="NANDO BROS II, un juego original de plataformas 2D para navegador.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main id="gameShell" aria-label="NANDO BROS II">
+    <canvas id="game" width="1280" height="720" aria-label="Área de juego"></canvas>
+    <div id="vignette"></div>
+
+    <section id="startScreen" class="screen visible">
+      <div class="hero-mark"><span>✦</span></div>
+      <p class="eyebrow">Una aventura de plataformas original</p>
+      <h1>NANDO <em>BROS II</em></h1>
+      <p class="tagline">Corre, salta y dispara a través de cuatro mundos.</p>
+      <button id="playBtn" class="primary">JUGAR</button>
+      <button id="levelsBtn" class="secondary">SELECCIONAR NIVEL</button>
+      <button id="installBtn" class="install-btn" hidden>⬇ INSTALAR EN ANDROID</button>
+      <div class="controls-hint"><b>A D / ← →</b> mover · <b>DOBLE W / ↑ / ESPACIO</b> supersalto · <b>Z</b> disparar · <b>P / ESC</b> pausa</div>
+    </section>
+
+    <section id="levelScreen" class="screen">
+      <p class="eyebrow">Elige un destino</p>
+      <h2>SANTUARIOS</h2>
+      <div id="levelGrid" class="level-grid"></div>
+      <button class="secondary backBtn">VOLVER</button>
+    </section>
+
+    <section id="pauseScreen" class="screen panel-screen">
+      <div class="glass-panel">
+        <p class="eyebrow">La aventura espera</p><h2>PAUSA</h2>
+        <button id="resumeBtn" class="primary">CONTINUAR</button>
+        <button id="restartBtn" class="secondary">REINICIAR NIVEL</button>
+        <button id="pauseLevelsBtn" class="secondary">SANTUARIOS</button>
+      </div>
+    </section>
+
+    <section id="endScreen" class="screen panel-screen">
+      <div class="glass-panel">
+        <div id="endIcon" class="end-icon">✦</div>
+        <p id="endEyebrow" class="eyebrow">Santuario restaurado</p>
+        <h2 id="endTitle">¡VICTORIA!</h2>
+        <p id="endStats"></p>
+        <button id="nextBtn" class="primary">SIGUIENTE NIVEL</button>
+        <button id="endLevelsBtn" class="secondary">SANTUARIOS</button>
+      </div>
+    </section>
+
+    <header id="hud" class="hidden">
+      <div class="hud-left">
+        <div class="hud-chip"><span class="gem">◆</span><b id="scoreText">000000</b></div>
+        <div class="hud-chip"><span>✦</span><b id="orbText">0 / 0</b></div>
+      </div>
+      <div class="level-title"><small id="levelNum">SANTUARIO I</small><strong id="levelName">JARDINES DEL ALBA</strong></div>
+      <div class="hud-right">
+        <div id="health" class="health"></div>
+        <button id="muteBtn" class="icon-btn" aria-label="Silenciar">♫</button>
+        <button id="pauseBtn" class="icon-btn" aria-label="Pausa">Ⅱ</button>
+      </div>
+    </header>
+
+    <div id="toast"></div>
+    <nav id="touchControls" aria-label="Controles táctiles">
+      <div class="touch-group touch-move">
+        <button class="touch-btn" data-key="KeyA" aria-label="Mover a la izquierda">◀</button>
+        <button class="touch-btn" data-key="KeyD" aria-label="Mover a la derecha">▶</button>
+      </div>
+      <div class="touch-group touch-actions">
+        <button class="touch-btn shoot-touch" data-key="KeyZ" aria-label="Disparar">Z</button>
+        <button class="touch-btn jump-touch" data-key="Space" aria-label="Saltar">↑</button>
+      </div>
+    </nav>
+  </main>
+  <script src="game.js"></script>
+</body>
+</html>
+
