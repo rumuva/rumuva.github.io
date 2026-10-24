@@ -1,0 +1,9 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {normalizeGuide,recommendedMission,missionStage} from '../dist/journey.js';
+import {validateBackup} from '../dist/engine.js';
+import {missions} from '../dist/data.js';
+test('old copies retain answers and receive a fresh welcome without losing progress',()=>{const restored=validateBackup({app:'aljarafe-conecta',version:1,name:'Equipo',work:{bienvenida:{answers:{priority:'revisar',archive:'claro'},result:{passed:true}}}});assert.equal(restored.work.bienvenida.result.passed,true);assert.equal(restored.name,'Equipo');assert.deepEqual(restored.guide,{complete:false,step:0,demoStage:0});assert.equal(recommendedMission(missions,restored.work).id,'clientes');});
+test('welcome progress survives copies and clamps malformed values',()=>{const restored=validateBackup({app:'aljarafe-conecta',version:1,name:'Equipo',work:{},guide:{complete:true,step:2,demoStage:1}});assert.deepEqual(restored.guide,{complete:true,step:2,demoStage:1});assert.deepEqual(normalizeGuide({complete:'true',step:999,demoStage:-3}),{complete:false,step:3,demoStage:0});assert.equal(normalizeGuide({step:'bad'}).step,0);});
+test('resume opens instructions, saved activity or review according to real work',()=>{assert.equal(missionStage(),0);assert.equal(missionStage({answers:{name:''}}),0);assert.equal(missionStage({answers:{name:'Sara'}}),1);assert.equal(missionStage({answers:{name:'Sara'},result:{passed:false}}),2);assert.equal(missionStage({result:{passed:true}}),2);});
+test('recommended route follows the earliest pending mission and ends with the report',()=>{assert.equal(recommendedMission(missions,{}).id,'bienvenida');const all=Object.fromEntries(missions.map(m=>[m.id,{result:{passed:true}}]));assert.equal(recommendedMission(missions,all),null);all.factura.result.passed=false;assert.equal(recommendedMission(missions,all).id,'factura');});

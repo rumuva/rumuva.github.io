@@ -1,3 +1,4 @@
+import {normalizeGuide} from './journey.js?v=1.1.0';
 export const norm = s => String(s??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
 export function number(s) {
  let v=String(s??'').replace(/[€\s]/g,'');
@@ -29,5 +30,5 @@ export function validateBackup(o){
   const result=v.result?evaluate(kinds[id],answers):null;
   work[id]={answers,attempts:Math.max(0,Math.min(10000,Math.floor(Number(v.attempts)||0))),hints:Math.max(0,Math.min(2,Math.floor(Number(v.hints)||0))),result,date:typeof v.date==='string'?v.date.slice(0,40):''};
  }
- return {app:'aljarafe-conecta',version:1,name:o.name,work};
+ return {app:'aljarafe-conecta',version:1,name:o.name,work,guide:normalizeGuide(o.guide)};
 }

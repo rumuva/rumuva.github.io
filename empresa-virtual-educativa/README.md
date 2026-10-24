@@ -35,6 +35,12 @@ Abrir http://localhost:8080 en un navegador moderno. Los módulos JavaScript req
 
 230 minutos de actividad. Propuesta de aula: tres sesiones de dos horas, incluidas explicación y reflexión. No es una acreditación oficial ni sustituye un programa formativo reglado.
 
+## Bienvenida y acompañamiento
+
+La primera entrada presenta una bienvenida guiada en cuatro pasos: conocer la empresa, entender el recorrido, ensayar los botones con un ejemplo sin nota y comenzar. El acceso «Cómo empezar» permite repetirla sin borrar respuestas. Se puede omitir expresamente para entrar a la oficina.
+
+La oficina destaca la primera misión pendiente y un mapa ordenado de las ocho actividades. Cada misión se divide en leer el encargo, hacer la actividad y revisar para continuar. Al retomar se abre el paso adecuado a sus borradores o resultados. Las copias antiguas conservan el trabajo y reciben la nueva bienvenida. No se bloquea la consulta de otras actividades.
+
 ## Funciones
 
 - Panel de oficina, ocho misiones, búsqueda y filtros por departamento y nivel.
