@@ -4,6 +4,10 @@
 
 Simulador de una pequeña empresa de suministros de oficina y servicios digitales ubicada ficticiamente en Mairena del Aljarafe. Enseña mediante ocho encargos conectados, con datos ficticios, pistas, comprobaciones y evidencias descargables.
 
+[Abrir la empresa virtual](https://rumuva.github.io/empresa-virtual-educativa/dist/)
+
+![Vista de Aljarafe Conecta](docs/vista-publicada.jpg)
+
 ## Empezar
 
 La aplicación está en `dist/`. Se puede alojar directamente en GitHub Pages o cualquier servidor estático. No requiere instalación, claves de API ni proceso de compilación.

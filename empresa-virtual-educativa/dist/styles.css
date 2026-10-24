@@ -9,3 +9,5 @@
 main:focus{outline:none}
 
 @media(max-width:650px){nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible;gap:4px;padding-bottom:13px}nav a{justify-content:center;font-size:10px;padding:9px 4px;gap:5px}.profile-btn{max-width:140px}.profile-btn>span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
+
+[hidden]{display:none!important}
