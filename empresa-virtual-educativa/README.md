@@ -92,3 +92,9 @@ Las pruebas cubren las ocho evaluaciones, formato monetario, reconciliación de 
 - `tests/engine.test.js`: verificaciones de coherencia y recuperación.
 
 Para ampliar: incorporar nuevas misiones y casos, elaborar materiales externos o añadir un backend con autenticación, seguimiento de grupo y un servicio de IA bajo un proyecto separado. Estas funciones no forman parte de esta versión.
+
+## Prompt maestro de producto
+
+Las instrucciones completas de diseño, pedagogía, experiencia de usuario, implementación y validación se conservan en [docs/PROMPT_MAESTRO_ACADEMIA.md](docs/PROMPT_MAESTRO_ACADEMIA.md).
+
+La versión 1.1.1 conserva el paso exacto al recuperar una actividad, añade regreso desde materiales de apoyo y permite ir desde una comprobación fallida al campo que debe revisarse.
