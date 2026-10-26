@@ -1,0 +1,17 @@
+{
+  "name": "RM Study AI",
+  "short_name": "RM Study AI",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f2f5fa",
+  "theme_color": "#14213d",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
