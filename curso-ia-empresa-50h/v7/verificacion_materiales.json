@@ -6,15 +6,15 @@
   "files": {
     "Guia_Didactica_Completa_Alumnado_50h.pdf": {
       "bytes": 1068931,
-      "sha256": "1d1af96f75ba79aa4a20b28b98d1dbe8f37a6a1a8a2c12ca2ae9e85de9b4252d"
+      "sha256": "ca18f6a6b187fa14fae4541d03145204a0b700d168834e36be20a7773f8a0dfd"
     },
     "Guia_Didactica_Completa_Alumnado_50h.docx": {
-      "bytes": 117894,
-      "sha256": "0ca9be78862615a0358a0b7bf8fe0f0021eba0a0f2729090f518acd95f72b030"
+      "bytes": 117895,
+      "sha256": "f6ba1ed43705b73a56dd1cf5d2f13264d19c462c6c2980a9c071d452a807dbdc"
     },
     "Kit_Practicas_8_Unidades_ALUMNADO.zip": {
-      "bytes": 876388,
-      "sha256": "e61bf425ea65d4718e65ada3cdec5161d0b9b98bb7b6d973a7a477251d66dadd"
+      "bytes": 876387,
+      "sha256": "3652c5d5cfdf14c61045aa19b11ef1d18c7f420104e1a6ef62bd6d60ef67bb18"
     }
   }
 }
