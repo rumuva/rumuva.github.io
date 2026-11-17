@@ -5,16 +5,16 @@
   "instructor": "Rubén Muñoz Valadés",
   "files": {
     "Guia_Didactica_Completa_Alumnado_50h.pdf": {
-      "bytes": 1031299,
-      "sha256": "8bd6346938ea9e78ae44425ac98d5b16c0d41cec0c0ab9822e68a90e58618426"
+      "bytes": 1068931,
+      "sha256": "dcd675fdcb60fe88802f21afad240f6c6e028e6d4b380bb1940815917dfeff49"
     },
     "Guia_Didactica_Completa_Alumnado_50h.docx": {
-      "bytes": 112881,
-      "sha256": "475547fce08ef6c3da6db66ae97bc8b3109902b6303c6f0591fcb51673c89ad0"
+      "bytes": 117895,
+      "sha256": "a496290bf6df1d78588f13f649c62ea83558f1202c1bf5f158c78534e02ac00e"
     },
     "Kit_Practicas_8_Unidades_ALUMNADO.zip": {
-      "bytes": 876385,
-      "sha256": "6ac9c7e3f658deb7db08373e1bf813f3a9d9cf66e22b631fbed9f59b048429d8"
+      "bytes": 876383,
+      "sha256": "1446ef7aa9305548ba4a65a7c96c4679b71e16137b1964cef86a53772a8ab6e4"
     }
   }
 }
