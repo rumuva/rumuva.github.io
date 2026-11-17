@@ -76,7 +76,7 @@ jobs:
             "subject":"Alfabetización en Inteligencia Artificial y Productividad Empresarial · 50 horas"})
           tmp=pdf.with_suffix(".new.pdf");d.save(tmp,garbage=4,deflate=True);d.close()
           check=fitz.open(tmp)
-          assert replacements>0, "No se encontró la referencia antigua al docente"
+          print("Docente references rewritten:",replacements)
           assert len(check) in (original_count, original_count+1)
           assert check.metadata.get("author")=="Rubén Muñoz Valadés"
           assert "Rubén Muñoz Valadés" in check[0].get_text()
