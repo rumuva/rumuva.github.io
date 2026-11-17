@@ -1,0 +1,40 @@
+name: V7 IA Empresa end-to-end QA
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'curso-ia-empresa-50h/index.html'
+      - 'curso-ia-empresa-50h/v7/qa_playwright.cjs'
+      - '.github/workflows/ia-empresa-v7-qa.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Chromium and Playwright
+        run: |
+          npm install --prefix "$RUNNER_TEMP/qa" --no-audit --no-fund --no-save playwright@1.58.2
+          "$RUNNER_TEMP/qa/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Run E2E tests against local static site
+        shell: bash
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/ia-qa-web.log 2>&1 &
+          pid=$!
+          trap 'kill $pid || true' EXIT
+          sleep 2
+          NODE_PATH="$RUNNER_TEMP/qa/node_modules" node curso-ia-empresa-50h/v7/qa_playwright.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: informe-qa-ia-v7
+          path: curso-ia-empresa-50h/v7/qa_end_to_end.json
+          if-no-files-found: warn
