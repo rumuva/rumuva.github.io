@@ -70,9 +70,10 @@ jobs:
           pdf=base/'Guia_Didactica_Completa_Alumnado_50h.pdf'
           with fitz.open(pdf) as d:
               content='\n'.join(p.get_text() for p in d)
-              assert 'Rubén Muñoz Valadés' in content
-              assert content.count('Lo que hemos aprendido')>=8
+              print('PDF QA diagnostics:',len(d),'pages;', 'Rubén found:', 'Rubén Muñoz Valadés' in content, 'summary count:',content.count('Lo que hemos aprendido'), 'first page:',d[0].get_text()[:350].replace('\\n',' | '))
               assert len(d)>=60 and len(d)<300
+              assert content.count('Lo que hemos aprendido')>=8, 'Eight unit summaries missing'
+              assert 'Rubén Muñoz Valadés' in content, 'Instructor attribution missing'
               print('Learner guide',len(d),'pages; logo images page 1',len(d[0].get_images()),'visual drawing groups',sum(len(p.get_drawings()) for p in d))
           with zipfile.ZipFile(base/'Kit_Practicas_8_Unidades_ALUMNADO.zip','w',zipfile.ZIP_DEFLATED) as z:
               for f in sorted(kit.iterdir()):
