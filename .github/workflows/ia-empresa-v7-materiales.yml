@@ -1,0 +1,95 @@
+name: V7 build and synchronize IA Empresa learner materials
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'curso-ia-empresa-50h/v7/build_kits.py'
+      - 'curso-ia-empresa-50h/guia-didactica-completa.html'
+      - '.github/workflows/ia-empresa-v7-materiales.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ia-empresa-v7-materiales
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install document and PDF conversion packages
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libreoffice-writer pandoc librsvg2-bin
+          python -m pip install --quiet python-docx beautifulsoup4 pymupdf
+      - name: Retrieve professional logo as a local image
+        run: |
+          mkdir -p curso-ia-empresa-50h/assets
+          curl -fLsS --retry 3 'https://raw.githubusercontent.com/rumuva/ruben-munoz-docente/main/assets/logo.png' -o curso-ia-empresa-50h/assets/logo-ruben.png
+          test -s curso-ia-empresa-50h/assets/logo-ruben.png
+      - name: Create unit practice materials from current course
+        run: |
+          python curso-ia-empresa-50h/v7/build_kits.py
+      - name: Export 8 student worksheets to printable PDF
+        shell: bash
+        run: |
+          libreoffice -env:UserInstallation=file:///tmp/lo_ia_v7_worksheets --headless --convert-to pdf --outdir curso-ia-empresa-50h/kits-alumnado curso-ia-empresa-50h/kits-alumnado/*.docx
+      - name: Convert updated complete HTML learner guide into editable Word
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          base=Path('curso-ia-empresa-50h')
+          s=(base/'guia-didactica-completa.html').read_text(encoding='utf8')
+          s=s.replace('https://raw.githubusercontent.com/rumuva/ruben-munoz-docente/main/assets/logo.png','assets/logo-ruben.png')
+          s=s.replace('Docente: pendiente de confirmar.', 'Docente: Rubén Muñoz Valadés.')
+          (base/'guia_compilable_v7.html').write_text(s,encoding='utf8')
+          assert s.count('class="review-summary"')==8
+          assert s.count('class="activity-title"')==56
+          PY
+          cd curso-ia-empresa-50h
+          pandoc guia_compilable_v7.html --from=html --to=docx --standalone --resource-path=. -o Guia_Didactica_Completa_Alumnado_50h.docx
+          libreoffice -env:UserInstallation=file:///tmp/lo_ia_v7_guide --headless --convert-to pdf --outdir . Guia_Didactica_Completa_Alumnado_50h.docx
+          rm guia_compilable_v7.html
+      - name: Package PDFs, integrity report and checks
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import zipfile,json,hashlib
+          import pymupdf as fitz
+          base=Path('curso-ia-empresa-50h')
+          kit=base/'kits-alumnado'
+          for i in range(1,9):
+              assert (kit/f'U{i:02d}_Cuaderno_Alumnado.docx').exists()
+              assert (kit/f'U{i:02d}_Cuaderno_Alumnado.pdf').stat().st_size>15000
+              assert (kit/f'U{i:02d}_Datos_Ficticios.csv').exists()
+          pdf=base/'Guia_Didactica_Completa_Alumnado_50h.pdf'
+          with fitz.open(pdf) as d:
+              content='\n'.join(p.get_text() for p in d)
+              assert 'Rubén Muñoz Valadés' in content
+              assert content.count('Lo que hemos aprendido')>=8
+              assert len(d)>=60 and len(d)<300
+              print('Learner guide',len(d),'pages; logo images page 1',len(d[0].get_images()),'visual drawing groups',sum(len(p.get_drawings()) for p in d))
+          with zipfile.ZipFile(base/'Kit_Practicas_8_Unidades_ALUMNADO.zip','w',zipfile.ZIP_DEFLATED) as z:
+              for f in sorted(kit.iterdir()):
+                  if f.is_file():z.write(f,f.name)
+          outputs=[p for p in [pdf,base/'Guia_Didactica_Completa_Alumnado_50h.docx',base/'Kit_Practicas_8_Unidades_ALUMNADO.zip'] if p.exists()]
+          report={'course':'IA Empresa 50 h','units':8,'activities':56,'instructor':'Rubén Muñoz Valadés','files':{p.name:{'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in outputs}}
+          (base/'v7'/'verificacion_materiales.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf8')
+          print('QA checks complete')
+          PY
+      - name: Commit the synchronized student deliverables
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add curso-ia-empresa-50h/kits-alumnado/ curso-ia-empresa-50h/Kit_Practicas_8_Unidades_ALUMNADO.zip curso-ia-empresa-50h/Guia_Didactica_Completa_Alumnado_50h.docx curso-ia-empresa-50h/Guia_Didactica_Completa_Alumnado_50h.pdf curso-ia-empresa-50h/v7/verificacion_materiales.json curso-ia-empresa-50h/assets/logo-ruben.png curso-ia-empresa-50h/kits_alumnado_manifest.json
+          if ! git diff --cached --quiet; then
+            git commit -m "V7 synchronize learner Word/PDF and 8 practical kits"
+            git pull --rebase origin main
+            git push origin main
+          fi
