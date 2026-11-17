@@ -52,6 +52,33 @@ jobs:
           PY
           cd curso-ia-empresa-50h
           pandoc guia_compilable_v7.html --from=html --to=docx --standalone --resource-path=. -o Guia_Didactica_Completa_Alumnado_50h.docx
+          python - <<'PY'
+          from docx import Document
+          from docx.shared import Inches,Pt,RGBColor
+          from pathlib import Path
+          p=Path('Guia_Didactica_Completa_Alumnado_50h.docx')
+          doc=Document(p)
+          target=doc.paragraphs[0]
+          def add(text='',style=None):
+              x=target.insert_paragraph_before(text,style=style)
+              return x
+          cap=add()
+          cap.add_run().add_picture('assets/logo-ruben.png',width=Inches(1.04))
+          add('GUÍA DIDÁCTICA COMPLETA DEL ALUMNADO',style='Title')
+          add('Alfabetización en Inteligencia Artificial y Productividad Empresarial',style='Heading 1')
+          add('50 horas · 8 unidades · 56 actividades · 10 jornadas lectivas')
+          add('Docente: Rubén Muñoz Valadés')
+          add('Horario: lunes a viernes, 09:00–11:30 y 12:00–14:30; descanso 11:30–12:00 no lectivo.')
+          add('ÍNDICE DE CONTENIDOS',style='Heading 1')
+          titles=['Presentación, objetivos y programación','U1. Fundamentos de IA y aplicaciones empresariales','U2. IA generativa y selección de herramientas','U3. Ingeniería de prompts','U4. Productividad y automatización','U5. Marketing y atención al cliente','U6. Aplicaciones sectoriales','U7. Normativa, RGPD y ética','U8. Proyecto final','Glosario y fuentes','Evaluación final de 32 preguntas']
+          for n,t in enumerate(titles,1):
+              add(str(n)+'. '+t)
+          add().add_run().add_break(7)
+          doc.core_properties.author='Rubén Muñoz Valadés'
+          doc.core_properties.subject='Guía didáctica completa, 50 horas, ocho unidades'
+          doc.save(p)
+          print('WORD cover and index with teacher identity added.')
+          PY
           libreoffice -env:UserInstallation=file:///tmp/lo_ia_v7_guide --headless --convert-to pdf --outdir . Guia_Didactica_Completa_Alumnado_50h.docx
           rm guia_compilable_v7.html
       - name: Package PDFs, integrity report and checks
