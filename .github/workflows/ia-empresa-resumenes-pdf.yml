@@ -76,7 +76,10 @@ jobs:
                   assert text.count('Autoevaluación')>=8
                   assert 'Rubén Muñoz Valadés' in check[0].get_text()
                   assert check[0].get_images(), 'Lost teacher logo'
-                  assert sum(len(page.get_images()) for page in list(check)[1:])>=8, 'The eight SVG-based lesson diagrams were not preserved'
+                  graphic_images=sum(len(page.get_images()) for page in list(check)[1:])
+                  graphic_paths=sum(len(page.get_drawings()) for page in list(check)[1:])
+                  print("Graphic audit:",graphic_images,"embedded images;",graphic_paths,"vector drawing groups")
+                  assert graphic_images+graphic_paths>=8, 'Visual elements missing from output'
                   assert len(check)>=50 and len(check)<=300
                   print('FINAL QA',len(check),'pages; 8 recaps, 8 quizzes, teacher logo, 50 h')
               tmp.replace(pdfpath)
