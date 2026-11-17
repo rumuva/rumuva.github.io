@@ -1,0 +1,91 @@
+name: Add pre-quiz unit recaps to IA Empresa PDF
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/ia-empresa-resumenes-pdf.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ia-empresa-resumenes-pdf
+  cancel-in-progress: false
+
+jobs:
+  publish-pdf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Install document conversion tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq pandoc libreoffice-writer
+          python -m pip install --quiet pymupdf
+      - name: Convert the reviewed guide and preserve the teacher-branded cover
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import re, subprocess, pathlib, tempfile
+          import pymupdf as fitz
+
+          directory=pathlib.Path('curso-ia-empresa-50h')
+          htmlpath=directory/'guia-didactica-completa.html'
+          pdfpath=directory/'Guia_Didactica_Completa_Alumnado_50h.pdf'
+          source=htmlpath.read_text(encoding='utf-8')
+          assert source.count('class="review-summary" id="resumen-unidad-')==8,'Eight recap sections missing'
+          assert source.count('class="quiz-form" data-quiz=')==8,'Eight quizzes missing'
+          assert source.count('class="activity-title"')==56,'56 activities must remain'
+          for n in range(1,9):
+              section=source.find(f'id="unidad-{n}"')
+              summary=source.find(f'id="resumen-unidad-{n}"',section)
+              quiz=source.find(f'data-quiz="{n}"',section)
+              assert -1 not in (section,summary,quiz) and section<summary<quiz, f'Incorrect recap order: U{n}'
+          # The PDF alone receives the instructor's confirmed name.
+          source=source.replace('Docente: pendiente de confirmar.','Docente: Rubén Muñoz Valadés.')
+          source=source.replace('Docente que imparte: pendiente de confirmar','Docente que imparte: Rubén Muñoz Valadés')
+          with tempfile.TemporaryDirectory() as td:
+              wd=pathlib.Path(td)
+              htmlfile=wd/'guia_resumenes.html'
+              docxfile=wd/'guia_resumenes.docx'
+              genpdf=wd/'guia_resumenes.pdf'
+              htmlfile.write_text(source,encoding='utf-8')
+              subprocess.run(['pandoc',str(htmlfile),'--from=html','--to=docx','--standalone','-o',str(docxfile)],check=True)
+              subprocess.run(['libreoffice','-env:UserInstallation=file:///tmp/lo_guia_resumenes','--headless','--convert-to','pdf','--outdir',td,str(docxfile)],check=True)
+              assert genpdf.exists() and genpdf.stat().st_size>30000
+              with fitz.open(pdfpath) as branded,fitz.open(genpdf) as generated:
+                  assert branded[0].get_images(),'Existing branded PDF cover must have the logo'
+                  result=fitz.open()
+                  result.insert_pdf(branded,from_page=0,to_page=0)
+                  result.insert_pdf(generated,from_page=1,to_page=len(generated)-1)
+                  metadata=result.metadata
+                  metadata.update({'author':'Rubén Muñoz Valadés','title':'Guía didáctica de IA para empresas · 50 horas · Resúmenes por unidad'})
+                  result.set_metadata(metadata)
+                  tmp=wd/'final.pdf'
+                  result.save(tmp,deflate=True,garbage=4)
+                  result.close()
+              with fitz.open(tmp) as check:
+                  text='\n'.join(p.get_text() for p in check)
+                  for n in range(1,9):
+                      assert f'Lo que hemos aprendido' in text and f'Unidad {n}' in text
+                  assert text.count('Lo que hemos aprendido')==8, 'Missing or duplicated summaries'
+                  assert text.count('Autoevaluación')>=8
+                  assert 'Rubén Muñoz Valadés' in check[0].get_text()
+                  assert check[0].get_images(), 'Lost teacher logo'
+                  assert len(check)>=50 and len(check)<=300
+                  print('FINAL QA',len(check),'pages; 8 recaps, 8 quizzes, teacher logo, 50 h')
+              tmp.replace(pdfpath)
+          PY
+      - name: Commit only the updated PDF
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add curso-ia-empresa-50h/Guia_Didactica_Completa_Alumnado_50h.pdf
+          if ! git diff --cached --quiet; then
+            git commit -m "Place expanded unit summaries before quizzes in the learner PDF"
+            git push
+          fi
