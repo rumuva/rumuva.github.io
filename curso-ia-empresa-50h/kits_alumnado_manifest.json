@@ -1,0 +1,42 @@
+{
+  "U1": {
+    "activities": 7,
+    "dataset_rows": 20,
+    "title": "Fundamentos de IA y aplicaciones empresariales"
+  },
+  "U2": {
+    "activities": 7,
+    "dataset_rows": 2,
+    "title": "IA generativa y selección de herramientas profesionales"
+  },
+  "U3": {
+    "activities": 7,
+    "dataset_rows": 2,
+    "title": "Ingeniería de prompts y verificación de resultados"
+  },
+  "U4": {
+    "activities": 7,
+    "dataset_rows": 20,
+    "title": "Productividad, ofimática y automatización segura"
+  },
+  "U5": {
+    "activities": 7,
+    "dataset_rows": 4,
+    "title": "Marketing, ventas y atención al cliente con IA"
+  },
+  "U6": {
+    "activities": 7,
+    "dataset_rows": 5,
+    "title": "Casos sectoriales para autónomos y microempresas"
+  },
+  "U7": {
+    "activities": 7,
+    "dataset_rows": 4,
+    "title": "Reglamento de IA, RGPD, ética y gobernanza"
+  },
+  "U8": {
+    "activities": 7,
+    "dataset_rows": 10,
+    "title": "Proyecto empresarial aplicado, medición y evaluación final"
+  }
+}

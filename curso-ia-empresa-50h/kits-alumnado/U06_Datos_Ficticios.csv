@@ -1,0 +1,6 @@
+﻿sector;tarea;riesgo;control;indicador
+Hosteleria;Reservas;Disponibilidad;Confirmar agenda;Consultas verificadas
+Comercio;Catalogo;Precios errados;Revisar ficha;Errores por ficha
+Administracion;Extractos de prueba;Datos;Usar ejemplos sinteticos;Exactitud
+Docencia;Preguntas;Errores pedagogicos;Validacion docente;Validez
+Servicios;Presupuesto;Compromisos;Aprobacion;Tiempo neto
