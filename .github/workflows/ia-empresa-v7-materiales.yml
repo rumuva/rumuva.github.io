@@ -111,12 +111,36 @@ jobs:
           (base/'v7'/'verificacion_materiales.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf8')
           print('QA checks complete')
           PY
+      - name: Package offline version for students without teacher solutions
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import zipfile
+          base=Path('curso-ia-empresa-50h')
+          essential=['index.html','guia-didactica-completa.html',
+            'Guia_Didactica_Completa_Alumnado_50h.pdf',
+            'Guia_Didactica_Completa_Alumnado_50h.docx',
+            'Kit_Practicas_8_Unidades_ALUMNADO.zip']
+          for n in essential:assert (base/n).exists(),n
+          output=base/'Curso_IA_Empresa_50h_V7_ALUMNADO.zip'
+          allowed=['assets/','presentaciones/','presentaciones_explicativas/',
+                   'presentaciones_explicativas_pdf/','kits-alumnado/']
+          with zipfile.ZipFile(output,'w',zipfile.ZIP_DEFLATED,compresslevel=6) as z:
+              for n in essential:z.write(base/n,n)
+              for folder in allowed:
+                  for p in (base/folder).rglob('*'):
+                      if p.is_file():z.write(p,str(p.relative_to(base)))
+              assert not any('Solucionario' in x.filename or 'SOLO_DOCENTE' in x.filename or 'Registro_Docente' in x.filename for x in z.infolist())
+          assert output.stat().st_size>2000000
+          print('Offline learning bundle',output.stat().st_size,'bytes')
+          PY
       - name: Commit the synchronized student deliverables
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add curso-ia-empresa-50h/kits-alumnado/ curso-ia-empresa-50h/Kit_Practicas_8_Unidades_ALUMNADO.zip curso-ia-empresa-50h/Guia_Didactica_Completa_Alumnado_50h.docx curso-ia-empresa-50h/Guia_Didactica_Completa_Alumnado_50h.pdf curso-ia-empresa-50h/v7/verificacion_materiales.json curso-ia-empresa-50h/assets/logo-ruben.png curso-ia-empresa-50h/kits_alumnado_manifest.json
+          git add curso-ia-empresa-50h/Curso_IA_Empresa_50h_V7_ALUMNADO.zip curso-ia-empresa-50h/kits-alumnado/ curso-ia-empresa-50h/Kit_Practicas_8_Unidades_ALUMNADO.zip curso-ia-empresa-50h/Guia_Didactica_Completa_Alumnado_50h.docx curso-ia-empresa-50h/Guia_Didactica_Completa_Alumnado_50h.pdf curso-ia-empresa-50h/v7/verificacion_materiales.json curso-ia-empresa-50h/assets/logo-ruben.png curso-ia-empresa-50h/kits_alumnado_manifest.json
           if ! git diff --cached --quiet; then
             git commit -m "V7 synchronize learner Word/PDF and 8 practical kits"
             git pull --rebase origin main
