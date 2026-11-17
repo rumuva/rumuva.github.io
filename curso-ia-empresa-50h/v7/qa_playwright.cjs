@@ -26,24 +26,24 @@ const url='http://127.0.0.1:8765/curso-ia-empresa-50h/';
   assert.equal(await page.locator('section.game-mission').count(),8);
  });
  await test('Unit 1 score and explained feedback',async()=>{
-  await page.locator('[data-open="unidad-1"]').click();
+  await page.locator('.navbtn[data-open="unidad-1"]').click();
   for(const [i,k] of ['B','A','C','B','B'].entries())
    await page.locator('form[data-quiz="1"] input[name="u1q'+(i+1)+'"][value="'+k+'"]').check();
   await page.locator('form[data-quiz="1"] button[type="submit"]').click();
   assert((await page.locator('#feedback-1').innerText()).includes('5/5'));
   assert.equal(await page.locator('form[data-quiz="1"] .quiz-feedback-details-v7 p').count(),5);
-  assert.equal(await page.locator('[data-open="unidad-2"]').isDisabled(),false);
+  assert.equal(await page.locator('.navbtn[data-open="unidad-2"]').isDisabled(),false);
  });
  await test('Progress persists after reload',async()=>{
   await page.reload();
-  assert.equal(await page.locator('[data-open="unidad-2"]').isDisabled(),false);
+  assert.equal(await page.locator('.navbtn[data-open="unidad-2"]').isDisabled(),false);
  });
  await test('CLARO prompt tool',async()=>{
   await page.evaluate(()=>{
    const k='rm-ia-empresa-50h-github-2026',p=JSON.parse(localStorage.getItem(k)||'{}');
    p.passed=Object.assign({},p.passed||{},{1:true,2:true});localStorage.setItem(k,JSON.stringify(p));
   });
-  await page.reload();await page.locator('[data-open="unidad-3"]').click();
+  await page.reload();await page.locator('.navbtn[data-open="unidad-3"]').click();
   const form=page.locator('#prompt-claro-v7');
   for(const [name,value] of Object.entries({contexto:'Cafetería ficticia',labor:'Redactar texto',acotaciones:'Sin inventar horarios',referencias:'Ficha autorizada',organizacion:'Tabla'}))
    await form.locator('input[name="'+name+'"]').fill(value);
@@ -55,7 +55,7 @@ const url='http://127.0.0.1:8765/curso-ia-empresa-50h/';
    const k='rm-ia-empresa-50h-github-2026',p=JSON.parse(localStorage.getItem(k)||'{}');
    p.passed=Object.assign({},p.passed||{},{3:true});localStorage.setItem(k,JSON.stringify(p));
   });
-  await page.reload();await page.locator('[data-open="unidad-4"]').click();
+  await page.reload();await page.locator('.navbtn[data-open="unidad-4"]').click();
   await page.locator('#calc-flow-v7 button[type="submit"]').click();
   assert((await page.locator('#calc-result-v7').innerText()).includes('120 min/semana'));
  });
@@ -64,19 +64,19 @@ const url='http://127.0.0.1:8765/curso-ia-empresa-50h/';
    const k='rm-ia-empresa-50h-github-2026',p=JSON.parse(localStorage.getItem(k)||'{}');
    p.passed=Object.assign({},p.passed||{},{4:true,5:true});localStorage.setItem(k,JSON.stringify(p));
   });
-  await page.reload();await page.locator('[data-open="unidad-6"]').click();
+  await page.reload();await page.locator('.navbtn[data-open="unidad-6"]').click();
   await page.locator('#sector-v7').selectOption('3');
   assert((await page.locator('#sector-result-v7').innerText()).includes('preguntas de repaso'));
  });
  await test('Mobile layout no horizontal document overflow',async()=>{
   await page.setViewportSize({width:390,height:844});
-  await page.locator('[data-open="unidad-1"]').click();
+  await page.locator('.navbtn[data-open="unidad-1"]').click();
   const dimensions=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,inner:innerWidth}));
   assert(dimensions.scroll<=dimensions.inner+8,JSON.stringify(dimensions));
  });
  await test('Keyboard focus indication',async()=>{
-  await page.locator('[data-open="unidad-1"]').focus();
-  const style=await page.locator('[data-open="unidad-1"]').evaluate(x=>getComputedStyle(x).outlineStyle);
+  await page.locator('.navbtn[data-open="unidad-1"]').focus();
+  const style=await page.locator('.navbtn[data-open="unidad-1"]').evaluate(x=>getComputedStyle(x).outlineStyle);
   assert.notEqual(style,'none');
  });
  await browser.close();
