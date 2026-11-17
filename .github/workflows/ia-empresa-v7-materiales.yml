@@ -140,9 +140,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          git reset --mixed origin/main
           git add curso-ia-empresa-50h/Curso_IA_Empresa_50h_V7_ALUMNADO.zip curso-ia-empresa-50h/kits-alumnado/ curso-ia-empresa-50h/Kit_Practicas_8_Unidades_ALUMNADO.zip curso-ia-empresa-50h/Guia_Didactica_Completa_Alumnado_50h.docx curso-ia-empresa-50h/Guia_Didactica_Completa_Alumnado_50h.pdf curso-ia-empresa-50h/v7/verificacion_materiales.json curso-ia-empresa-50h/assets/logo-ruben.png curso-ia-empresa-50h/kits_alumnado_manifest.json
           if ! git diff --cached --quiet; then
             git commit -m "V7 synchronize learner Word/PDF and 8 practical kits"
-            git pull --rebase origin main
             git push origin main
           fi
