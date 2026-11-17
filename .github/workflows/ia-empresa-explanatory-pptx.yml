@@ -1,0 +1,54 @@
+name: Publish explanatory IA Empresa PowerPoints
+
+on:
+  push:
+    paths:
+      - 'curso-ia-empresa-50h/build-explanatory.js'
+      - '.github/workflows/ia-empresa-explanatory-pptx.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ia-empresa-explanatory
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install slide dependency
+        run: npm install --prefix "$RUNNER_TEMP/slides" --no-audit --no-fund --no-save pptxgenjs@3.12.0
+      - name: Build slides based on lesson content
+        run: NODE_PATH="$RUNNER_TEMP/slides/node_modules" node curso-ia-empresa-50h/build-explanatory.js
+      - name: Validate PPTX slide counts
+        run: |
+          python3 -c "import zipfile,pathlib,re; d=pathlib.Path('curso-ia-empresa-50h/presentaciones_explicativas'); a=sorted(d.glob('*.pptx')); assert len(a)==8, len(a); counts=[len([n for n in zipfile.ZipFile(p).namelist() if re.fullmatch(r'ppt/slides/slide\d+\.xml',n)]) for p in a]; print('Slide counts:',counts,'total:',sum(counts)); assert counts==[17,17,17,17,17,19,17,17],counts"
+      - name: Install LibreOffice if needed
+        run: |
+          if ! command -v libreoffice >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq libreoffice-impress
+          fi
+      - name: Convert presentations to printable PDFs
+        run: |
+          mkdir -p curso-ia-empresa-50h/presentaciones_explicativas_pdf
+          libreoffice -env:UserInstallation=file:///tmp/lo-ia-empresa --headless --convert-to pdf --outdir curso-ia-empresa-50h/presentaciones_explicativas_pdf curso-ia-empresa-50h/presentaciones_explicativas/*.pptx
+          test "$(find curso-ia-empresa-50h/presentaciones_explicativas_pdf -name '*.pdf' | wc -l)" -eq 8
+      - name: Commit deliverables
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add curso-ia-empresa-50h/presentaciones_explicativas/ curso-ia-empresa-50h/presentaciones_explicativas_pdf/
+          if ! git diff --cached --quiet; then
+            git commit -m "Publicar 8 PowerPoints explicativos (138 diapositivas) y PDF"
+            git push
+          fi
