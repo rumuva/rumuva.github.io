@@ -81,7 +81,9 @@ jobs:
           assert "Rubén Muñoz Valadés" in check[0].get_text()
           print("PDF images:",len(check[0].get_images()),"image metadata:",len(check[0].get_image_info()))
           assert check[0].get_images() or check[0].get_image_info(), "No se encuentra el logotipo"
-          assert not any("pendiente de confirmar" in page.get_text().lower() or "pendiente de confirmación" in page.get_text().lower() for page in check)
+          remaining=[(i+1,page.get_text()[:500].replace("\n"," | ")) for i,page in enumerate(check) if "pendiente de confirmar" in page.get_text().lower() or "pendiente de confirmación" in page.get_text().lower()]
+          print("Pending references",remaining[:12])
+          assert not remaining, "La guía contiene referencias antiguas"
           assert tmp.stat().st_size>50000
           check.close();tmp.replace(pdf)
           print("Branded PDF ready:",pdf, "replacement lines:",replacements,"cover added:",cover_added)
