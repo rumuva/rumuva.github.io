@@ -2,10 +2,6 @@ name: Publish complete IA course learner guide
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - 'curso-ia-empresa-50h/guia-didactica-completa.html'
-      - '.github/workflows/ia-empresa-guia-completa.yml'
 
 permissions:
   contents: write
