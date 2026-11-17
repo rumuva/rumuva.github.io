@@ -55,6 +55,7 @@ jobs:
           python - <<'PY'
           from docx import Document
           from docx.shared import Inches,Pt,RGBColor
+          from docx.enum.text import WD_BREAK
           from pathlib import Path
           p=Path('Guia_Didactica_Completa_Alumnado_50h.docx')
           doc=Document(p)
@@ -73,7 +74,7 @@ jobs:
           titles=['Presentación, objetivos y programación','U1. Fundamentos de IA y aplicaciones empresariales','U2. IA generativa y selección de herramientas','U3. Ingeniería de prompts','U4. Productividad y automatización','U5. Marketing y atención al cliente','U6. Aplicaciones sectoriales','U7. Normativa, RGPD y ética','U8. Proyecto final','Glosario y fuentes','Evaluación final de 32 preguntas']
           for n,t in enumerate(titles,1):
               add(str(n)+'. '+t)
-          add().add_run().add_break(7)
+          add().add_run().add_break(WD_BREAK.PAGE)
           doc.core_properties.author='Rubén Muñoz Valadés'
           doc.core_properties.subject='Guía didáctica completa, 50 horas, ocho unidades'
           doc.save(p)
