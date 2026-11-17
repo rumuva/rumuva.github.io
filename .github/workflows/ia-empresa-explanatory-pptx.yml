@@ -31,7 +31,7 @@ jobs:
         run: NODE_PATH="$RUNNER_TEMP/slides/node_modules" node curso-ia-empresa-50h/build-explanatory.js
       - name: Validate PPTX slide counts
         run: |
-          python3 -c "import zipfile,pathlib,re; d=pathlib.Path('curso-ia-empresa-50h/presentaciones_explicativas'); a=sorted(d.glob('*.pptx')); assert len(a)==8, len(a); counts=[len([n for n in zipfile.ZipFile(p).namelist() if re.fullmatch(r'ppt/slides/slide\d+\.xml',n)]) for p in a]; print('Slide counts:',counts,'total:',sum(counts)); assert counts==[17,17,17,17,17,19,17,17],counts"
+          python3 -c "import zipfile,pathlib,re; d=pathlib.Path('curso-ia-empresa-50h/presentaciones_explicativas'); a=sorted(d.glob('*.pptx')); assert len(a)==8, len(a); counts=[len([n for n in zipfile.ZipFile(p).namelist() if re.fullmatch(r'ppt/slides/slide\d+\.xml',n)]) for p in a]; print('Slide counts:',counts,'total:',sum(counts)); assert counts==[19,19,19,19,19,21,19,19],counts"
       - name: Install LibreOffice if needed
         run: |
           if ! command -v libreoffice >/dev/null 2>&1; then
@@ -49,6 +49,6 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add curso-ia-empresa-50h/presentaciones_explicativas/ curso-ia-empresa-50h/presentaciones_explicativas_pdf/
           if ! git diff --cached --quiet; then
-            git commit -m "Publicar 8 PowerPoints explicativos (138 diapositivas) y PDF"
+            git commit -m "Publicar ocho PowerPoints ampliados (154 diapositivas) y PDF"
             git push
           fi
