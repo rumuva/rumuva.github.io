@@ -75,9 +75,10 @@ const url='http://127.0.0.1:8765/curso-ia-empresa-50h/';
   assert(dimensions.scroll<=dimensions.inner+8,JSON.stringify(dimensions));
  });
  await test('Keyboard focus indication',async()=>{
-  await page.locator('.navbtn[data-open="unidad-1"]').focus();
-  const style=await page.locator('.navbtn[data-open="unidad-1"]').evaluate(x=>getComputedStyle(x).outlineStyle);
-  assert.notEqual(style,'none');
+  await page.keyboard.press('Tab');
+  const info=await page.evaluate(()=>({tag:document.activeElement?.tagName,outline:getComputedStyle(document.activeElement).outlineStyle}));
+  assert.notEqual(info.tag,'BODY');
+  assert.notEqual(info.outline,'none',JSON.stringify(info));
  });
  await browser.close();
  fs.writeFileSync('curso-ia-empresa-50h/v7/qa_end_to_end.json',JSON.stringify(report,null,2));
