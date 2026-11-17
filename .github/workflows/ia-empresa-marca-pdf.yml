@@ -79,7 +79,8 @@ jobs:
           assert len(check) in (original_count, original_count+1)
           assert check.metadata.get("author")=="Rubén Muñoz Valadés"
           assert "Rubén Muñoz Valadés" in check[0].get_text()
-          print("PDF images:",len(check[0].get_images()),"image metadata:",len(check[0].get_image_info()))\n          assert check[0].get_images() or check[0].get_image_info(), "No se encuentra el logotipo"
+          print("PDF images:",len(check[0].get_images()),"image metadata:",len(check[0].get_image_info()))
+          assert check[0].get_images() or check[0].get_image_info(), "No se encuentra el logotipo"
           assert not any("pendiente de confirmar" in page.get_text().lower() or "pendiente de confirmación" in page.get_text().lower() for page in check)
           assert tmp.stat().st_size>50000
           check.close();tmp.replace(pdf)
