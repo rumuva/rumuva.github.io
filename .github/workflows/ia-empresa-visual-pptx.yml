@@ -1,0 +1,42 @@
+name: Generate IA Empresa visual presentations
+
+on:
+  push:
+    paths:
+      - 'curso-ia-empresa-50h/visual-slides-build.js'
+      - '.github/workflows/ia-empresa-visual-pptx.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ia-empresa-presentaciones
+  cancel-in-progress: false
+
+jobs:
+  build-presentations:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install PowerPoint generator
+        run: npm install --prefix "$RUNNER_TEMP/ia-ppt" --no-audit --no-fund --no-save pptxgenjs@3.12.0
+      - name: Generate eight editable presentations
+        run: NODE_PATH="$RUNNER_TEMP/ia-ppt/node_modules" node curso-ia-empresa-50h/visual-slides-build.js
+      - name: Commit PPTX deliverables
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add curso-ia-empresa-50h/presentaciones/
+          if ! git diff --cached --quiet; then
+            git commit -m "Generate IA Empresa visual PowerPoints (8 units)"
+            git push
+          fi
