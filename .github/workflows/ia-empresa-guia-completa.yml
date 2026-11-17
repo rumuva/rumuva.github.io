@@ -1,0 +1,67 @@
+name: Publish complete IA course learner guide
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'curso-ia-empresa-50h/guia-didactica-completa.html'
+      - '.github/workflows/ia-empresa-guia-completa.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ia-empresa-guia-completa
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Prepare PDF and Word conversion
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq pandoc
+          python -m pip install --quiet weasyprint==68.0 pypdf==6.1.1
+      - name: Build accessible PDF and editable Word
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd curso-ia-empresa-50h
+          pandoc guia-didactica-completa.html --from=html --to=docx --standalone -o Guia_Didactica_Completa_Alumnado_50h.docx
+          python - <<'PY'
+          from weasyprint import HTML
+          from pypdf import PdfReader
+          from pathlib import Path
+          import zipfile
+          html=Path('guia-didactica-completa.html')
+          source=html.read_text(encoding='utf-8')
+          assert source.count('class="lesson" id="unidad-')==8, "Faltan unidades"
+          assert source.count('class="activity-title"')==56, "Faltan actividades"
+          assert 'Índice de contenidos' in source, "Falta el índice"
+          assert '<script>' not in source, "No publicar claves en scripts"
+          assert '11:30' in source and '14:30' in source, "Falta la programación"
+          pdf=Path('Guia_Didactica_Completa_Alumnado_50h.pdf')
+          HTML(filename=str(html)).write_pdf(str(pdf))
+          pages=len(PdfReader(str(pdf)).pages)
+          assert pages>=50 and pages<=300, f"Revisar paginación: {pages}"
+          docx=Path('Guia_Didactica_Completa_Alumnado_50h.docx')
+          with zipfile.ZipFile(docx) as z:
+              assert 'word/document.xml' in z.namelist()
+          assert docx.stat().st_size>15000 and pdf.stat().st_size>50000
+          print(f'VALIDATED: {pages} PDF pages; docx={docx.stat().st_size}; pdf={pdf.stat().st_size}')
+          PY
+      - name: Commit downloadable guides to GitHub Pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add curso-ia-empresa-50h/Guia_Didactica_Completa_Alumnado_50h.docx curso-ia-empresa-50h/Guia_Didactica_Completa_Alumnado_50h.pdf
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish complete downloadable learner guide PDF and Word"
+            git push
+          fi
