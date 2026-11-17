@@ -52,7 +52,7 @@ function cover(p,u){let s=p.addSlide();s.background={color:C.dark};s.addShape(sh
  txt(s,'PRESENTACIÓN FORMATIVA EXPLICATIVA',.78,.76,9,.36,14,'BFE2DE',true);
  txt(s,'UNIDAD '+u.n,.78,1.51,7,.51,23,'F8AD89',true);txt(s,u.title,.78,2.27,9.5,1.44,32,C.white,true);
  box(s,.79,4.83,8.79,.82,'2B6E76');txt(s,'Conceptos explicados · Ejemplos · Ejercicio resuelto',1.04,5.03,8.2,.4,17,C.white,true);
- txt(s,'Formación propia · Docente por confirmar',.78,6.85,10,.32,11,'C7DAD9');notes(s,u.objective+' Contexto: '+u.context)}
+ txt(s,'Docente: Rubén Muñoz Valadés · Formación propia',.78,6.85,10,.32,11,'C7DAD9');notes(s,u.objective+' Contexto: '+u.context)}
 function objectives(p,u){let s=p.addSlide();header(s,u,'Qué aprenderás y para qué','Objetivo y situación profesional de referencia');
  panel(s,.65,2.06,7.2,1.53,'Objetivo específico',u.objective,C.soft);
  panel(s,.65,3.79,7.2,2.31,'Situación profesional',u.context);
@@ -109,13 +109,52 @@ function reflection(p,u){let s=p.addSlide();header(s,u,'Comprueba tu comprensió
  ['¿Qué concepto aplicarías primero en tu trabajo y por qué?','¿Cómo comprobarías una respuesta antes de enviarla?','¿Qué dato nunca introducirías sin autorización?'].forEach((q,i)=>panel(s,.68,2.09+i*1.31,11.89,1.06,'Pregunta '+(i+1),q,i%2?C.soft:C.white));
  box(s,.69,6.18,11.9,.58,C.cream);txt(s,'Continúa con la autoevaluación: 5 preguntas; debes acertar al menos 4.',.85,6.32,11.59,.28,14.8,C.ink,true);
  notes(s,'Las cuestiones son de reflexión. El test de la plataforma mantiene sus criterios originales.')}
+
+const V7_VISUAL_DATA=[
+ {flow:["Consulta","Regla o borrador","Verificación","Persona decide"],bad:"La IA afirma una devolución sin comprobar condiciones",good:"Borrador sujeto a la política validada del comercio",check:"La persona responsable confirma las condiciones"},
+ {flow:["Necesidad","Prueba idéntica","Privacidad","Decisión"],bad:"Elegir por publicidad y popularidad",good:"Comparar la misma tarea con criterios y datos ficticios",check:"Revisar permisos, coste de control y conservación"},
+ {flow:["Contexto","Labor","Límites","Formato"],bad:"Haz un anuncio muy bueno",good:"Escribe 60 palabras para la cafetería ficticia, sin inventar horarios, en tres puntos",check:"Contrastar todos los datos antes de publicar"},
+ {flow:["Tiempo antes","Borrador IA","Revisión","Ahorro neto"],bad:"Contar solo el tiempo de generación",good:"20 casos × (12 − 2 − 3 − 1) = 120 minutos/semana",check:"Confirmar calidad y revisar casos excepcionales"},
+ {flow:["Público","Propuesta","Validación","Aprobación"],bad:"Publicar un descuento no autorizado",good:"Preparar el texto, verificar precio y pedir revisión",check:"No inventar promesas ni testimonios"},
+ {flow:["Sector","Tarea","Riesgo","Indicador"],bad:"Aplicar una automatización idéntica a todos los negocios",good:"Elegir un piloto medible y revisable para cada sector",check:"Verificar datos de hostelería, comercio, asesoría y formación"},
+ {flow:["Dato","Semáforo","Permiso","Registro"],bad:"Pegar contraseñas o documentos sensibles en un chat",good:"Probar con ejemplos ficticios y permisos proporcionados",check:"Responsable, trazabilidad y regla de parada"},
+ {flow:["Objetivo","Piloto","Medición","Decisión"],bad:"Afirmar que diez casos garantizan eficacia universal",good:"Comparar línea base, salidas revisadas y errores",check:"Proyecto evaluado por docente con rúbrica de 100 puntos"}
+];
+function visualRoadmapV7(p,u){
+ const v=V7_VISUAL_DATA[u.n-1],s=p.addSlide();
+ header(s,u,"Mapa visual del procedimiento","Sigue el recorrido de izquierda a derecha");
+ v.flow.forEach((step,i)=>{
+  let x=.6+i*3.18;
+  box(s,x,2.65,2.87,2.31,i===3?C.cream:C.soft);
+  s.addShape(shp.ellipse,{x:x+1.03,y:2.95,w:.82,h:.82,fill:{color:i===3?C.coral:C.teal},line:{color:i===3?C.coral:C.teal}});
+  txt(s,String(i+1),x+1.26,3.12,.35,.35,22,C.white,true,{align:"center"});
+  txt(s,step,x+.27,4.08,2.35,.59,19,C.ink,true,{align:"center"});
+  if(i<3)txt(s,"→",x+2.84,3.57,.44,.48,25,C.coral,true);
+ });
+ txt(s,"Una decisión profesional requiere datos válidos y responsabilidad humana.",.82,5.72,11.69,.53,18,C.teal,true,{align:"center"});
+ notes(s,"Explicación completa: "+u.objective+" Caso: "+u.context+" Recorrido: "+v.flow.join(" → "));
+}
+function visualCompareV7(p,u){
+ const v=V7_VISUAL_DATA[u.n-1],s=p.addSlide();
+ header(s,u,"Ejemplo comentado: mejora una decisión","Compara una respuesta precipitada con una comprobada");
+ const boxes=[["EVITAR",v.bad,C.cream],["PROCEDIMIENTO ADECUADO",v.good,C.soft],["CONTROL FINAL",v.check,C.white]];
+ boxes.forEach((b,i)=>{
+  let x=.68+i*4.2;
+  box(s,x,2.38,3.81,3.32,b[2]);
+  txt(s,b[0],x+.22,2.72,3.34,.38,16,i===0?C.coral:C.teal,true,{align:"center"});
+  txt(s,b[1],x+.23,3.36,3.32,1.75,20,C.ink,false,{valign:"mid",align:"center"});
+ });
+ txt(s,"Justifica tu elección y explica cómo comprobarías el resultado en tu negocio.",.87,6.16,11.4,.45,16,C.muted,true,{align:"center"});
+ notes(s,"Para explicar al alumnado desde cero: "+v.bad+". Frente a ello: "+v.good+". Control final: "+v.check+". Contexto didáctico: "+u.context);
+}
+
 (async()=>{
  for(const u of data){
  const p=new pptxgen();p.layout='LAYOUT_WIDE';p.author='Diseño instruccional de FPE';p.lang='es-ES';p.title='IA empresa · Unidad '+u.n+' · Presentación explicativa';
  cover(p,u);objectives(p,u);for(let k=0;k<u.topics.length;k++){theory(p,u,u.topics[k],k);application(p,u,u.topics[k])}
- caseSlide(p,u);guided(p,u,1);guided(p,u,2);practice(p,u);checklist(p,u);summary(p,u);reflection(p,u);
+ caseSlide(p,u);visualRoadmapV7(p,u);visualCompareV7(p,u);guided(p,u,1);guided(p,u,2);practice(p,u);checklist(p,u);summary(p,u);reflection(p,u);
  const n=p._slides.length;
- if(n!==(u.n===6?19:17))throw Error('Número de diapositivas incorrecto U'+u.n+': '+n);
+ if(n!==(u.n===6?21:19))throw Error('Número de diapositivas incorrecto U'+u.n+': '+n);
  for(let i=1;i<n;i++)txt(p._slides[i],String(i+1).padStart(2,'0')+'/'+n,11.94,7.1,.75,.2,9,C.muted,false,{align:'right'});
  const file='U'+u.n+'_Presentacion_Explicativa_IA_Empresa.pptx';
  await p.writeFile({fileName:path.join(dest,file)});
