@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#7d4039">
+  <meta name="description" content="Curso interactivo de 100 horas para preparar el acceso a la Universidad de Sevilla de mayores de 45 años (2027). Lengua Castellana, comentario y entrevista.">
+  <title>Aula Isabel · Acceso Universidad +45 · 2027</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="course-data.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Navegación del curso">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">I<span>.</span></span><div><strong>AULA ISABEL</strong><small>Rumbo a la universidad · 2027</small></div></div>
+      <div class="sidebar-subhead">TU AULA</div>
+      <nav class="mainnav" id="nav-main" aria-label="Secciones principales">
+        <button type="button" data-route="inicio" class="nav-button active"><span aria-hidden="true">⌂</span> Inicio</button>
+        <button type="button" data-route="plan" class="nav-button"><span aria-hidden="true">◷</span> Plan de estudio</button>
+        <button type="button" data-route="simulacros" class="nav-button"><span aria-hidden="true">✎</span> Simulacros</button>
+        <button type="button" data-route="glosario" class="nav-button"><span aria-hidden="true">≡</span> Glosario</button>
+        <button type="button" data-route="recursos" class="nav-button"><span aria-hidden="true">↗</span> Fuentes oficiales</button>
+      </nav>
+      <div class="sidebar-subhead with-line">LAS 12 UNIDADES</div>
+      <nav id="unit-nav" class="unitnav" aria-label="Unidades didácticas"></nav>
+      <div class="sidebar-footer"><p><strong>100 horas</strong> · 12 unidades</p><p>Progreso guardado en este navegador, sin cuentas ni envíos.</p></div>
+    </aside>
+    <div class="mobile-overlay" id="mobile-overlay" hidden></div>
+    <div class="workspace">
+      <header class="topbar"><button class="icon-btn mobile-menu" id="menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false">☰</button><div class="top-context"><span class="mini-badge">CURSO DE PREPARACIÓN · 2027</span><span class="top-title">Universidad de Sevilla · +45</span></div><div class="top-actions"><button type="button" id="font-toggle" class="small-btn" title="Aumentar o reducir letra" aria-label="Cambiar tamaño del texto">A<span aria-hidden="true">+</span></button><button type="button" id="print-button" class="small-btn" title="Imprimir material del alumnado">Imprimir</button></div></header>
+      <main id="main" tabindex="-1" class="main-area"><div class="loading">Preparando el aula…</div></main>
+      <footer class="site-footer">Preparación autónoma basada en la documentación pública de Andalucía. No es una página oficial de la universidad. <span>© 2026–2027 · Material didáctico original.</span></footer>
+    </div>
+  </div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <div id="print-space" aria-hidden="true"></div>
+</body>
+</html>
