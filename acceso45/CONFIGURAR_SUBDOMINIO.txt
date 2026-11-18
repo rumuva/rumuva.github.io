@@ -1,0 +1,11 @@
+SUBDOMINIO PROPUESTO: acceso45.rubenmunozdocente.digital
+
+Estado: pendiente de configuración real del DNS en el registrador/Hostinger y del dominio personalizado en GitHub Pages (requiere un sitio GitHub Pages exclusivo o configurar un proxy/reverse proxy compatible en el hosting).
+
+1. Se ha generado una carpeta estática con los cuatro archivos web para publicar.
+2. Para usar el subdominio en GitHub Pages, lo recomendado es alojar esta carpeta en la raíz de un repositorio propio configurado con GitHub Pages en su rama de despliegue.
+3. En Hostinger → DNS, crear el registro CNAME: nombre acceso45; destino rumuva.github.io (solo cuando GitHub Pages esté correctamente configurado para el repositorio propio y el dominio personalizado).
+4. En Settings → Pages del repositorio propio, indicar acceso45.rubenmunozdocente.digital y activar HTTPS cuando GitHub termine la comprobación del DNS.
+5. Probar con un navegador externo la respuesta HTTPS. La mera existencia del subdominio o un CNAME no prueba que esté publicado.
+
+No cambiar la zona DNS principal ni sobrescribir la configuración existente de otros subdominios. Si se sirve por Hostinger, puede usarse un subdominio con Document Root propio e importar estos archivos directamente allí.
