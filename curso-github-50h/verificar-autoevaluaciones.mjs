@@ -25,7 +25,7 @@ function readArray(name) {
     const c = html[i];
     if (quoted) {
       if (escape) escape = false;
-      else if (c === '\\\\') escape = true;
+      else if (c === '\\') escape = true;
       else if (c === '"') quoted = false;
       continue;
     }
